@@ -1,0 +1,39 @@
+services:
+    frontend:
+        build: ./frontend
+        ports:
+            - "3000:3000"
+        environment:
+            # NODE_ENV: production
+            NODE_ENV: development
+            CHOKIDAR_USEPOLLING: true
+            NEXT_PUBLIC_API_URL: /api
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
+        restart: unless-stopped
+
+    api:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        restart: always
+        environment:
+            DB_URL: http://postgres:5432
+            DB_USERNAME: postgres
+            DB_PASSWORD: postgres
+        ports:
+            - 8089:80
+        volumes:
+            - ./backend:/app # DEV onl
+
+    postgres:
+        image: postgres:15.8
+        environment:
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: medical-app
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        restart: always
+        ports:
+            - 5422:5432
