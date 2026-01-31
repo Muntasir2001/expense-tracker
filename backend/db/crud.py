@@ -36,7 +36,7 @@ def get_all_expenses() -> list[Expense]:
         return list(db.scalars(stmt).all())
 
 # READ ONE
-def get_expense_by_id(expense_id: int) -> Optional[Expense]:
+def get_expense_by_id(expense_id: str) -> Optional[Expense]:
     """Retrieve a single expense by ID"""
     with SessionLocal() as db:
         stmt = select(Expense).where(Expense.id == expense_id)
@@ -44,7 +44,7 @@ def get_expense_by_id(expense_id: int) -> Optional[Expense]:
 
 # UPDATE
 def update_expense(
-    expense_id: int,
+    expense_id: str,
     title: Optional[str] = None,
     price: Optional[float] = None,
     expense_date_time: Optional[datetime] = None,
@@ -75,7 +75,7 @@ def update_expense(
         return expense
 
 # DELETE
-def delete_expense(expense_id: int) -> bool:
+def delete_expense(expense_id: str) -> bool:
     """Delete an expense record"""
     with SessionLocal() as db:
         stmt = select(Expense).where(Expense.id == expense_id)
