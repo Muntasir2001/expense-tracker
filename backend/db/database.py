@@ -4,10 +4,11 @@ from typing import Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
-from schema import Base
+from .schema import Base
+import config
 
 # Format: postgresql://username:password@host:port/database_name
-DATABASE_URL = "postgresql://user:password@localhost:5432/expenses_db"
+DATABASE_URL = f"postgresql://{config.DB_USERNAME}:{config.DB_PASSWORD}@{config.DB_HOST}:{config.DB_PORT}/{config.DB_NAME}"
 
 engine = create_engine(DATABASE_URL, echo=True)  # echo=True for SQL logging
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

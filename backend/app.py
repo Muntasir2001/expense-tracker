@@ -1,14 +1,36 @@
 import logging
+from typing import List, Optional
 
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 
 from custom_exception import CustomHttpException
+from db.crud import create_expense, get_all_expenses
+from db.database import init_db
+from models.expense import Expense, CreateExpense
+from models.error import ErrorMessage
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup code
+    init_db()
+    yield
+    # Shutdown code (if any)
 
 app = FastAPI(
    title="Expense Tracker Docs",
+   lifespan=lifespan
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.exception_handler(RequestValidationError)
@@ -29,8 +51,58 @@ async def custom_exception_handler(request: Request, exc: CustomHttpException):
    }
 )
 
+class JsonApiErrorResponse(JSONResponse):
+    media_type = "application/problem+json"
+
+
 @app.get("/")
 def read_root():
-   """Check whether the server is up"""
+   """Healthcheck"""
 
    return 'Hello World'
+
+
+@app.get("/expenses",
+    response_model=List[Optional[Expense]],
+    responses={
+        500: {
+            "model": ErrorMessage,
+            "content": {"application/problem+json": {
+                "example": {
+                    "status": 500,
+                    "title": "There has been an error"
+                }
+            }}
+        }
+    }
+)
+def get_expenses():
+    """Get all the expenses"""
+    print(get_all_expenses())
+    return get_all_expenses()
+
+
+@app.post("/expense",
+    # response_model=List[Optional[Expense]],
+    responses={
+        500: {
+            "model": ErrorMessage,
+            "content": {"application/problem+json": {
+                "example": {
+                    "status": 500,
+                    "title": "There has been an error"
+                }
+            }}
+        }
+    }
+)
+def create_expense_api(expense: CreateExpense):
+    """Create expense"""
+
+    return create_expense(
+        title=expense.title,
+        price=expense.price,
+        expense_date_time=expense.expense_date_time,
+        description=expense.description,
+        note=expense.note
+    )
