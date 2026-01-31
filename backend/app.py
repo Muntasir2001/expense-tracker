@@ -8,9 +8,9 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 
 from custom_exception import CustomHttpException
-from db.crud import create_expense, get_all_expenses
+from db.crud import create_expense, get_all_expenses, update_expense
 from db.database import init_db
-from models.expense import Expense, CreateExpense
+from models.expense import Expense, CreateExpenseRequestModel, ExpenseResponseModel, UpdateExpenseRequestModel
 from models.error import ErrorMessage
 
 @asynccontextmanager
@@ -76,14 +76,14 @@ def read_root():
         }
     }
 )
-def get_expenses():
+def get_expenses_api():
     """Get all the expenses"""
     print(get_all_expenses())
     return get_all_expenses()
 
 
 @app.post("/expense",
-    # response_model=List[Optional[Expense]],
+    response_model=ExpenseResponseModel,
     responses={
         500: {
             "model": ErrorMessage,
@@ -96,13 +96,60 @@ def get_expenses():
         }
     }
 )
-def create_expense_api(expense: CreateExpense):
+def create_expense_api(expense: CreateExpenseRequestModel):
     """Create expense"""
 
-    return create_expense(
+    create_expense_res = create_expense(
         title=expense.title,
         price=expense.price,
         expense_date_time=expense.expense_date_time,
         description=expense.description,
         note=expense.note
     )
+
+    if not create_expense_res:
+        return {
+            "result": "Expense creation failed"
+        }
+    
+    return {
+        "result": "Expense created successfully!",
+        "expense_id": create_expense_res.id
+    }
+
+@app.put("/expense/{id}",
+    response_model=ExpenseResponseModel,
+    responses={
+        500: {
+            "model": ErrorMessage,
+            "content": {"application/problem+json": {
+                "example": {
+                    "status": 500,
+                    "title": "There has been an error"
+                }
+            }}
+        }
+    }
+)
+def update_expense_api(id: str, req: UpdateExpenseRequestModel):
+    """Update expense"""
+    update_expense_res = update_expense(
+        expense_id=id,
+        title=req.title,
+        price=req.price,
+        expense_date_time=req.expense_date_time,
+        description=req.description,
+        note=req.note
+    )
+    print('update_expense_res', update_expense_res)
+
+    if not update_expense_res:
+        return {
+            "result": "Expense not found",
+            "expense_id": id
+        }
+
+    return {
+        "result": "Expense updated successfully!",
+        "expense_id": id
+    }
