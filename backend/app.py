@@ -8,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 
 from custom_exception import CustomHttpException
-from db.crud import create_expense, get_all_expenses, update_expense
+from db.crud import create_expense, get_all_expenses, update_expense, delete_expense
 from db.database import init_db
 from models.expense import Expense, CreateExpenseRequestModel, ExpenseResponseModel, UpdateExpenseRequestModel
 from models.error import ErrorMessage
@@ -141,15 +141,43 @@ def update_expense_api(id: str, req: UpdateExpenseRequestModel):
         description=req.description,
         note=req.note
     )
-    print('update_expense_res', update_expense_res)
 
     if not update_expense_res:
         return {
-            "result": "Expense not found",
+            "result": "Expense not found!",
             "expense_id": id
         }
 
     return {
         "result": "Expense updated successfully!",
+        "expense_id": id
+    }
+
+@app.delete("/expense/{id}",
+    response_model=ExpenseResponseModel,
+    responses={
+        500: {
+            "model": ErrorMessage,
+            "content": {"application/problem+json": {
+                "example": {
+                    "status": 500,
+                    "title": "There has been an error"
+                }
+            }}
+        }
+    }
+)
+def delete_expense_api(id: str):
+    """Delete expense"""
+    delete_expense_res = delete_expense(expense_id=id)
+
+    if not delete_expense_res:
+        return {
+            "result": "Expense not found!",
+            "expense_id": id
+        }
+
+    return {
+        "result": "Expense deleted successfully!",
         "expense_id": id
     }
