@@ -21,7 +21,7 @@ export default function Page() {
 
     const [isAddExpenseDialogOpen, setIsAddExpenseDialogOpen] = useState(false);
 
-    const handleAddExpense = async (e: React.SubmitEvent) => {
+    const handleAddExpense = async (e: React.FormEvent) => {
         e.preventDefault();
 
         console.log("expenseDate:", expenseDate);
@@ -50,15 +50,82 @@ export default function Page() {
             const json = await res.json();
             const newExpense = mapApiResponseToExpense({
                 ...expenseBody,
-                id: json.id,
+                id: json.expense_id,
                 created_at: expenseBody.expense_date!,
                 expense_date: expenseBody.expense_date!,
             });
             setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
             toast("Expense added successfully");
             setIsAddExpenseDialogOpen(false);
+            // Clear form
+            setTitle("");
+            setDescription("");
+            setNote("");
+            setAmount(0);
+            setExpenseDate(undefined);
         } else {
             toast.error("Failed to add expense");
+        }
+    };
+
+    const handleEditExpense = async (
+        expenseId: string,
+        updatedData: {
+            title: string;
+            description?: string;
+            note?: string;
+            amount: number;
+            expense_date?: string;
+        }
+    ) => {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/expense/${expenseId}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedData),
+            }
+        );
+
+        if (res.ok) {
+            const updatedExpense: Expense = {
+                id: expenseId,
+                title: updatedData.title,
+                description: updatedData.description || undefined,
+                note: updatedData.note || undefined,
+                amount: updatedData.amount,
+                expenseDate: updatedData.expense_date!,
+                createdAt:
+                    expenses.find((e) => e.id === expenseId)?.createdAt || "",
+            };
+            setExpenses((prevExpenses) =>
+                prevExpenses.map((exp) =>
+                    exp.id === expenseId ? updatedExpense : exp
+                )
+            );
+            toast("Expense updated successfully");
+        } else {
+            toast.error("Failed to update expense");
+        }
+    };
+
+    const handleDeleteExpense = async (expenseId: string) => {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/expense/${expenseId}`,
+            {
+                method: "DELETE",
+            }
+        );
+
+        if (res.ok) {
+            setExpenses((prevExpenses) =>
+                prevExpenses.filter((exp) => exp.id !== expenseId)
+            );
+            toast("Expense deleted successfully");
+        } else {
+            toast.error("Failed to delete expense");
         }
     };
 
@@ -113,7 +180,11 @@ export default function Page() {
                     handleAddExpense={handleAddExpense}
                 />
             </Dialog>
-            <ExpenseTable expenses={expenses} />
+            <ExpenseTable
+                expenses={expenses}
+                onEdit={handleEditExpense}
+                onDelete={handleDeleteExpense}
+            />
         </div>
     );
 }
