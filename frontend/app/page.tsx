@@ -5,9 +5,62 @@ import { useState, useEffect } from "react";
 import ExpenseTable from "@/components/ExpenseTable";
 import type { Expense, ExpenseApiResponse } from "@/types/expenses";
 import { mapApiResponseToExpense } from "@/lib/utils";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import AddExpenseDialog from "@/components/AddExpenseDialog";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function Page() {
     const [expenses, setExpenses] = useState<Array<Expense>>([]);
+
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [note, setNote] = useState("");
+    const [amount, setAmount] = useState(0);
+    const [expenseDate, setExpenseDate] = useState<Date>();
+
+    const [isAddExpenseDialogOpen, setIsAddExpenseDialogOpen] = useState(false);
+
+    const handleAddExpense = async (e: React.SubmitEvent) => {
+        e.preventDefault();
+
+        console.log("expenseDate:", expenseDate);
+
+        const expenseBody = {
+            title,
+            description,
+            note,
+            amount,
+            expense_date: expenseDate
+                ? expenseDate.toISOString().split("T")[0]
+                : undefined,
+        };
+
+        console.log("Adding expense:", expenseBody);
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/expense`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(expenseBody),
+        });
+
+        if (res.ok) {
+            const json = await res.json();
+            const newExpense = mapApiResponseToExpense({
+                ...expenseBody,
+                id: json.id,
+                created_at: expenseBody.expense_date!,
+                expense_date: expenseBody.expense_date!,
+            });
+            setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
+            toast("Expense added successfully");
+            setIsAddExpenseDialogOpen(false);
+        } else {
+            toast.error("Failed to add expense");
+        }
+    };
 
     useEffect(() => {
         const fetchExpenses = async () => {
@@ -37,6 +90,29 @@ export default function Page() {
             <header>
                 <h1 className="text-2xl font-bold mb-4">Expenses</h1>
             </header>
+            <Dialog
+                open={isAddExpenseDialogOpen}
+                onOpenChange={setIsAddExpenseDialogOpen}
+            >
+                <DialogTrigger asChild>
+                    <Button className="mb-10 mt-5 hover:cursor-pointer">
+                        Add Expense
+                    </Button>
+                </DialogTrigger>
+                <AddExpenseDialog
+                    title={title}
+                    setTitle={setTitle}
+                    description={description}
+                    setDescription={setDescription}
+                    note={note}
+                    setNote={setNote}
+                    amount={amount}
+                    setAmount={setAmount}
+                    expenseDate={expenseDate}
+                    setExpenseDate={setExpenseDate}
+                    handleAddExpense={handleAddExpense}
+                />
+            </Dialog>
             <ExpenseTable expenses={expenses} />
         </div>
     );

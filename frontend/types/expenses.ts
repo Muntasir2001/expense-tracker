@@ -4,7 +4,7 @@ export interface Expense {
     description?: string;
     note?: string;
     amount: number;
-    expenseDateTime: string;
+    expenseDate: string;
     createdAt: string;
 }
 
@@ -14,6 +14,6 @@ export interface ExpenseApiResponse {
     description?: string;
     note?: string;
     amount: number;
-    expense_date_time: string;
+    expense_date: string;
     created_at: string;
 }

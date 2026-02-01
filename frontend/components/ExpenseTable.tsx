@@ -7,6 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import type { Expense } from "@/types/expenses";
 
 interface Props {
@@ -20,13 +21,11 @@ const ExpenseTable = ({ expenses }: Props) => {
             <TableHeader>
                 <TableRow>
                     <TableHead className="w-25 font-bold">Num</TableHead>
-                    <TableHead className="font-bold">Date & Time</TableHead>
+                    <TableHead className="font-bold">Date</TableHead>
                     <TableHead className="font-bold">Title</TableHead>
                     <TableHead className="font-bold">Description</TableHead>
                     <TableHead className="font-bold">Note</TableHead>
-                    <TableHead className="text-right font-bold">
-                        Amount
-                    </TableHead>
+                    <TableHead className="font-bold">Amount (£)</TableHead>
                     <TableHead></TableHead>
                 </TableRow>
             </TableHeader>
@@ -38,12 +37,21 @@ const ExpenseTable = ({ expenses }: Props) => {
                             <TableCell className="font-medium">
                                 {index + 1}
                             </TableCell>
-                            <TableCell>{expense.expenseDateTime}</TableCell>
+                            <TableCell>{expense.expenseDate}</TableCell>
                             <TableCell>{expense.title}</TableCell>
                             <TableCell>{expense.description}</TableCell>
                             <TableCell>{expense.note}</TableCell>
+                            <TableCell>{expense.amount}</TableCell>
                             <TableCell className="text-right">
-                                {expense.amount}
+                                <Button className="hover:cursor-pointer">
+                                    Edit
+                                </Button>
+                                <Button
+                                    variant="destructive"
+                                    className="ml-5 hover:cursor-pointer"
+                                >
+                                    Delete
+                                </Button>
                             </TableCell>
                         </TableRow>
                     ))}
