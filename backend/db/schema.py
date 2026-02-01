@@ -15,9 +15,9 @@ class Expense(Base):
     title: Mapped[str] = mapped_column(String(255))
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     note: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    price: Mapped[float] = mapped_column(Float)
+    amount: Mapped[float] = mapped_column(Float)
     expense_date_time: Mapped[datetime] = mapped_column(DateTime)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     
     def __repr__(self) -> str:
-        return f"Expense(id={self.id!r}, title={self.title!r}, price={self.price!r})"
+        return f"Expense(id={self.id!r}, title={self.title!r}, amount={self.amount!r})"

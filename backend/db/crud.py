@@ -9,7 +9,7 @@ from .schema import Expense
 # CREATE
 def create_expense(
     title: str,
-    price: float,
+    amount: float,
     expense_date_time: datetime,
     description: Optional[str] = None,
     note: Optional[str] = None
@@ -18,7 +18,7 @@ def create_expense(
     with SessionLocal() as db:
         new_expense = Expense(
             title=title,
-            price=price,
+            amount=amount,
             expense_date_time=expense_date_time,
             description=description,
             note=note
@@ -46,7 +46,7 @@ def get_expense_by_id(expense_id: str) -> Optional[Expense]:
 def update_expense(
     expense_id: str,
     title: Optional[str] = None,
-    price: Optional[float] = None,
+    amount: Optional[float] = None,
     expense_date_time: Optional[datetime] = None,
     description: Optional[str] = None,
     note: Optional[str] = None
@@ -61,8 +61,8 @@ def update_expense(
         
         if title is not None:
             expense.title = title
-        if price is not None:
-            expense.price = price
+        if amount is not None:
+            expense.amount = amount
         if expense_date_time is not None:
             expense.expense_date_time = expense_date_time
         if description is not None:

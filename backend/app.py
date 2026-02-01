@@ -1,5 +1,6 @@
 import logging
 from typing import List, Optional
+import asyncio
 
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
@@ -16,6 +17,7 @@ from models.error import ErrorMessage
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup code
+    await asyncio.sleep(3)
     init_db()
     yield
     # Shutdown code (if any)
@@ -101,7 +103,7 @@ def create_expense_api(expense: CreateExpenseRequestModel):
 
     create_expense_res = create_expense(
         title=expense.title,
-        price=expense.price,
+        amount=expense.amount,
         expense_date_time=expense.expense_date_time,
         description=expense.description,
         note=expense.note
@@ -136,7 +138,7 @@ def update_expense_api(id: str, req: UpdateExpenseRequestModel):
     update_expense_res = update_expense(
         expense_id=id,
         title=req.title,
-        price=req.price,
+        amount=req.amount,
         expense_date_time=req.expense_date_time,
         description=req.description,
         note=req.note
