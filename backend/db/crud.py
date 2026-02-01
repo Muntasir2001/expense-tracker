@@ -10,7 +10,7 @@ from .schema import Expense
 def create_expense(
     title: str,
     amount: float,
-    expense_date_time: datetime,
+    expense_date: datetime,
     description: Optional[str] = None,
     note: Optional[str] = None
 ) -> Expense:
@@ -19,7 +19,7 @@ def create_expense(
         new_expense = Expense(
             title=title,
             amount=amount,
-            expense_date_time=expense_date_time,
+            expense_date=expense_date,
             description=description,
             note=note
         )
@@ -47,7 +47,7 @@ def update_expense(
     expense_id: str,
     title: Optional[str] = None,
     amount: Optional[float] = None,
-    expense_date_time: Optional[datetime] = None,
+    expense_date: Optional[datetime] = None,
     description: Optional[str] = None,
     note: Optional[str] = None
 ) -> Optional[Expense]:
@@ -63,8 +63,8 @@ def update_expense(
             expense.title = title
         if amount is not None:
             expense.amount = amount
-        if expense_date_time is not None:
-            expense.expense_date_time = expense_date_time
+        if expense_date is not None:
+            expense.expense_date = expense_date
         if description is not None:
             expense.description = description
         if note is not None:

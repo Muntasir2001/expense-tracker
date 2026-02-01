@@ -10,7 +10,7 @@ class Expense(BaseModel):
     description: str = Field(..., examples=["From Asda"])
     note: str = Field(..., examples=["Download the receipt later"])
     amount: float = Field(..., examples=[100.50])
-    expense_date_time: Union[str, datetime] = Field(..., examples=["2026-10-08T10:00:00"])
+    expense_date: Union[str, datetime] = Field(..., examples=["2026-10-08T10:00:00"])
     created_at: Union[str, datetime] = Field(..., examples=["2026-10-10T10:00:00"])
 
 class CreateExpenseRequestModel(BaseModel):
@@ -18,14 +18,14 @@ class CreateExpenseRequestModel(BaseModel):
     description: str = Field(..., examples=["From Asda"])
     note: str = Field(..., examples=["Download the receipt later"])
     amount: float = Field(..., examples=[100.50])
-    expense_date_time: Union[str, datetime] = Field(..., examples=["2026-10-08T10:00:00"])
+    expense_date: Union[str, datetime] = Field(..., examples=["2026-10-08T10:00:00"])
 
 class UpdateExpenseRequestModel(BaseModel):
     title: Optional[str] = Field(default=None, examples=["Groceries"])
     description: Optional[str] = Field(default=None, examples=["From Asda"])
     note: Optional[str] = Field(default=None, examples=["Download the receipt later"])
     amount: Optional[float] = Field(default=None, examples=[100.50])
-    expense_date_time: Optional[Union[str, datetime] ]= Field(default=None, examples=["2026-10-08T10:00:00"])
+    expense_date: Optional[Union[str, datetime] ]= Field(default=None, examples=["2026-10-08T10:00:00"])
 
 class ExpenseResponseModel(BaseModel):
     result: str = Field(..., examples=["Expense created successfully"])

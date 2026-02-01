@@ -104,7 +104,7 @@ def create_expense_api(expense: CreateExpenseRequestModel):
     create_expense_res = create_expense(
         title=expense.title,
         amount=expense.amount,
-        expense_date_time=expense.expense_date_time,
+        expense_date=expense.expense_date,
         description=expense.description,
         note=expense.note
     )
@@ -139,7 +139,7 @@ def update_expense_api(id: str, req: UpdateExpenseRequestModel):
         expense_id=id,
         title=req.title,
         amount=req.amount,
-        expense_date_time=req.expense_date_time,
+        expense_date=req.expense_date,
         description=req.description,
         note=req.note
     )
