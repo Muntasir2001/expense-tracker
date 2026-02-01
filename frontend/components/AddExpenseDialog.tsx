@@ -85,7 +85,7 @@ const AddExpenseDialog = ({
                         />
                     </Field>
                     <Field>
-                        <Label htmlFor="expense-date">Expense Date</Label>
+                        <Label htmlFor="expense-date">Date of Expense</Label>
                         <Datepicker
                             date={expenseDate}
                             setDate={setExpenseDate}

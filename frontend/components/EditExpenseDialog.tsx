@@ -84,7 +84,7 @@ const EditExpenseDialog = ({
                         />
                     </Field>
                     <Field>
-                        <Label htmlFor="edit-expense-date">Expense Date</Label>
+                        <Label htmlFor="edit-expense-date">Date of Expense</Label>
                         <Datepicker
                             date={expenseDate}
                             setDate={setExpenseDate}
