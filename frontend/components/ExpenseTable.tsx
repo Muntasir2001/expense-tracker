@@ -24,6 +24,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import EditExpenseDialog from "./EditExpenseDialog";
 import type { Expense } from "@/types/expenses";
+import { toast } from "sonner";
 
 interface Props {
     expenses?: Array<Expense>;
@@ -34,6 +35,7 @@ interface Props {
             description?: string;
             note?: string;
             amount: number;
+            vat: number;
             expense_date?: string;
         }
     ) => Promise<void>;
@@ -50,6 +52,7 @@ const ExpenseTable = ({ expenses, onEdit, onDelete }: Props) => {
     const [editDescription, setEditDescription] = useState("");
     const [editNote, setEditNote] = useState("");
     const [editAmount, setEditAmount] = useState(0);
+    const [editVat, setEditVat] = useState(0);
     const [editExpenseDate, setEditExpenseDate] = useState<Date>();
 
     const handleOpenEditDialog = (expense: Expense) => {
@@ -58,6 +61,7 @@ const ExpenseTable = ({ expenses, onEdit, onDelete }: Props) => {
         setEditDescription(expense.description || "");
         setEditNote(expense.note || "");
         setEditAmount(expense.amount);
+        setEditVat(expense.vat);
         setEditExpenseDate(
             expense.expenseDate ? new Date(expense.expenseDate) : undefined
         );
@@ -69,11 +73,24 @@ const ExpenseTable = ({ expenses, onEdit, onDelete }: Props) => {
 
         if (!editingExpenseId) return;
 
+        if (editExpenseDate) {
+            const currentDate = new Date();
+
+            if (editExpenseDate > currentDate) {
+                toast.error("Expense date cannot be in the future");
+                return;
+            }
+        } else {
+            toast.error("Please select a valid expense date");
+            return;
+        }
+
         const updatedData = {
             title: editTitle,
             description: editDescription,
             note: editNote,
             amount: editAmount,
+            vat: editVat,
             expense_date: editExpenseDate
                 ? editExpenseDate.toISOString().split("T")[0]
                 : undefined,
@@ -90,6 +107,8 @@ const ExpenseTable = ({ expenses, onEdit, onDelete }: Props) => {
         setEditAmount(0);
         setEditExpenseDate(undefined);
     };
+
+    console.log("expenses:", expenses);
     return (
         <>
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -102,6 +121,8 @@ const ExpenseTable = ({ expenses, onEdit, onDelete }: Props) => {
                     setNote={setEditNote}
                     amount={editAmount}
                     setAmount={setEditAmount}
+                    vat={editVat}
+                    setVat={setEditVat}
                     expenseDate={editExpenseDate}
                     setExpenseDate={setEditExpenseDate}
                     handleEditExpense={handleEditExpense}
@@ -118,6 +139,7 @@ const ExpenseTable = ({ expenses, onEdit, onDelete }: Props) => {
                         <TableHead className="font-bold">Description</TableHead>
                         <TableHead className="font-bold">Note</TableHead>
                         <TableHead className="font-bold">Amount (£)</TableHead>
+                        <TableHead className="font-bold">VAT (20%)</TableHead>
                         <TableHead></TableHead>
                     </TableRow>
                 </TableHeader>
@@ -138,6 +160,7 @@ const ExpenseTable = ({ expenses, onEdit, onDelete }: Props) => {
                                 <TableCell>{expense.description}</TableCell>
                                 <TableCell>{expense.note}</TableCell>
                                 <TableCell>{expense.amount}</TableCell>
+                                <TableCell>{expense.vat}</TableCell>
                                 <TableCell className="text-right">
                                     <Button
                                         className="hover:cursor-pointer"

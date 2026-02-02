@@ -10,6 +10,7 @@ class Expense(BaseModel):
     description: str = Field(..., examples=["From Asda"])
     note: str = Field(..., examples=["Download the receipt later"])
     amount: float = Field(..., examples=[100.50])
+    vat: float = Field(..., examples=[20.5])
     expense_date: Union[str, datetime] = Field(..., examples=["2026-10-08T10:00:00"])
     created_at: Union[str, datetime] = Field(..., examples=["2026-10-10T10:00:00"])
 
@@ -18,6 +19,7 @@ class CreateExpenseRequestModel(BaseModel):
     description: str = Field(..., examples=["From Asda"])
     note: str = Field(..., examples=["Download the receipt later"])
     amount: float = Field(..., examples=[100.50])
+    vat: float = Field(..., examples=[20.5])
     expense_date: Union[str, datetime] = Field(..., examples=["2026-10-08T10:00:00"])
 
 class UpdateExpenseRequestModel(BaseModel):
@@ -25,6 +27,7 @@ class UpdateExpenseRequestModel(BaseModel):
     description: Optional[str] = Field(default=None, examples=["From Asda"])
     note: Optional[str] = Field(default=None, examples=["Download the receipt later"])
     amount: Optional[float] = Field(default=None, examples=[100.50])
+    vat: Optional[float] = Field(default=None, examples=[20.50])
     expense_date: Optional[Union[str, datetime] ]= Field(default=None, examples=["2026-10-08T10:00:00"])
 
 class ExpenseResponseModel(BaseModel):

@@ -4,6 +4,7 @@ export interface Expense {
     description?: string;
     note?: string;
     amount: number;
+    vat: number;
     expenseDate: string;
     createdAt: string;
 }
@@ -14,6 +15,7 @@ export interface ExpenseApiResponse {
     description?: string;
     note?: string;
     amount: number;
+    vat: number;
     expense_date: string;
     created_at: string;
 }

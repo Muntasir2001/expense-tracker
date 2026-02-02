@@ -10,6 +10,7 @@ from .schema import Expense
 def create_expense(
     title: str,
     amount: float,
+    vat: float,
     expense_date: datetime,
     description: Optional[str] = None,
     note: Optional[str] = None
@@ -19,6 +20,7 @@ def create_expense(
         new_expense = Expense(
             title=title,
             amount=amount,
+            vat=vat,
             expense_date=expense_date,
             description=description,
             note=note
@@ -47,6 +49,7 @@ def update_expense(
     expense_id: str,
     title: Optional[str] = None,
     amount: Optional[float] = None,
+    vat: Optional[float] = None,
     expense_date: Optional[datetime] = None,
     description: Optional[str] = None,
     note: Optional[str] = None
@@ -63,6 +66,8 @@ def update_expense(
             expense.title = title
         if amount is not None:
             expense.amount = amount
+        if vat is not None:
+            expense.vat = vat
         if expense_date is not None:
             expense.expense_date = expense_date
         if description is not None:

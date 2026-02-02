@@ -14,6 +14,7 @@ export function mapApiResponseToExpense(apiData: ExpenseApiResponse): Expense {
         description: apiData.description,
         note: apiData.note,
         amount: apiData.amount,
+        vat: apiData.vat,
         expenseDate: apiData.expense_date,
         createdAt: apiData.created_at,
     };

@@ -16,6 +16,7 @@ class Expense(Base):
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     note: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     amount: Mapped[float] = mapped_column(Float)
+    vat: Mapped[float] = mapped_column(Float)
     expense_date: Mapped[datetime] = mapped_column(DateTime,default=datetime.now)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     

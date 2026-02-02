@@ -24,6 +24,8 @@ interface AddExpenseDialogProps {
     setNote: Dispatch<SetStateAction<string>>;
     amount: number;
     setAmount: Dispatch<SetStateAction<number>>;
+    vat: number;
+    setVat: Dispatch<SetStateAction<number>>;
     expenseDate: Date | undefined;
     setExpenseDate: Dispatch<SetStateAction<Date | undefined>>;
     handleAddExpense: (e: React.SubmitEvent) => Promise<void>;
@@ -41,6 +43,8 @@ const AddExpenseDialog = ({
     setNote,
     amount,
     setAmount,
+    vat,
+    setVat,
 }: AddExpenseDialogProps) => {
     return (
         // <form>
@@ -99,10 +103,28 @@ const AddExpenseDialog = ({
                             type="number"
                             placeholder="24.23"
                             value={amount}
-                            onChange={(e) =>
-                                setAmount(parseFloat(e.target.value))
-                            }
+                            onChange={(e) => {
+                                setAmount(parseFloat(e.target.value));
+                                setVat(
+                                    parseFloat(
+                                        (
+                                            parseFloat(e.target.value) * 0.2
+                                        ).toFixed(2)
+                                    )
+                                );
+                            }}
                             required
+                        />
+                    </Field>
+                    <Field>
+                        <Label htmlFor="vat">VAT (20%)</Label>
+                        <Input
+                            id="vat"
+                            name="vat"
+                            type="number"
+                            placeholder="4.85"
+                            value={vat}
+                            disabled
                         />
                     </Field>
                 </FieldGroup>

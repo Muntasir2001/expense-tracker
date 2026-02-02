@@ -17,6 +17,7 @@ export default function Page() {
     const [description, setDescription] = useState("");
     const [note, setNote] = useState("");
     const [amount, setAmount] = useState(0);
+    const [vat, setVat] = useState(0);
     const [expenseDate, setExpenseDate] = useState<Date>();
 
     const [isAddExpenseDialogOpen, setIsAddExpenseDialogOpen] = useState(false);
@@ -26,11 +27,24 @@ export default function Page() {
 
         console.log("expenseDate:", expenseDate);
 
+        if (expenseDate) {
+            const currentDate = new Date();
+
+            if (expenseDate > currentDate) {
+                toast.error("Expense date cannot be in the future");
+                return;
+            }
+        } else {
+            toast.error("Please select a valid expense date");
+            return;
+        }
+
         const expenseBody = {
             title,
             description,
             note,
             amount,
+            vat,
             expense_date: expenseDate
                 ? expenseDate.toISOString().split("T")[0]
                 : undefined,
@@ -75,6 +89,7 @@ export default function Page() {
             description?: string;
             note?: string;
             amount: number;
+            vat: number;
             expense_date?: string;
         }
     ) => {
@@ -96,6 +111,7 @@ export default function Page() {
                 description: updatedData.description || undefined,
                 note: updatedData.note || undefined,
                 amount: updatedData.amount,
+                vat: updatedData.vat,
                 expenseDate: updatedData.expense_date!,
                 createdAt:
                     expenses.find((e) => e.id === expenseId)?.createdAt || "",
@@ -175,6 +191,8 @@ export default function Page() {
                     setNote={setNote}
                     amount={amount}
                     setAmount={setAmount}
+                    vat={vat}
+                    setVat={setVat}
                     expenseDate={expenseDate}
                     setExpenseDate={setExpenseDate}
                     handleAddExpense={handleAddExpense}
