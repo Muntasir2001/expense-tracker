@@ -1,5 +1,8 @@
 # Expense Tracker
 
+## Live Demo
+https://expense.noobdev54.com/
+
 ## Instructions to run the app
 
 1. Install Docker from [here](https://www.docker.com/products/docker-desktop/).
